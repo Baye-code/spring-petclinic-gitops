@@ -11,7 +11,10 @@ spec:
       targetPort: 8080
   selector:
     app: petclinic
-
+  template:
+    spec:
+      containers:
+        - image: 05021997/petclinic-gitops:main-96f5a59e6efa9e685077017669a7889c55d11049
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,7 +35,7 @@ spec:
     spec:
       containers:
         - name: workload
-          image: 05021997/petclinic:master
+          image: 05021997/petclinic-gitops:main-96f5a59e6efa9e685077017669a7889c55d11049
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
