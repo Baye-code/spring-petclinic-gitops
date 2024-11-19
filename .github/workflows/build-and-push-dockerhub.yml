@@ -32,12 +32,10 @@ jobs:
       - name: Build with Maven Wrapper
         run: ./mvnw -B verify
 
-      # Log in to Docker Hub
-      #   - name: Log in to Docker Hub
-      #     uses: docker/login-action@v2
-      #     with:
-      #       username: ${{ secrets.DOCKER_USERNAME }}
-      #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # Set Env
+      - uses: actions/checkout@v2
+      - name: Set env
+        run: echo "GITHUB_BRANCH=$(echo $GITHUB_REF_NAME-$GITHUB_SHA)" >> $GITHUB_ENV  
 
       # Build the Docker image
       - name: Build Docker Image
@@ -57,7 +55,7 @@ jobs:
           # Assuming you have a manifest file named k8s.yaml
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@gmail.com"
-          yq eval '.spec.template.spec.containers[0].image = 05021997/petclinic-gitops:$GITHUB_SHA' -i k8s/petclinic.yml
+          yq eval '.spec.template.spec.containers[0].image = "05021997/petclinic-gitops:${{ env.GITHUB_BRANCH }}"' -i k8s/petclinic.yml
 
           git pull
           git add .
